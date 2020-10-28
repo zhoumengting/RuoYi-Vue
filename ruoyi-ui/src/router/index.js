@@ -1,10 +1,9 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue'   //引入vue
+import Router from 'vue-router'  //引入vue路由
 
-Vue.use(Router)
+Vue.use(Router)  //安装插件
 
-/* Layout */
-import Layout from '@/layout'
+import Layout from '@/layout'    //引入Layout模块
 
 /**
  * Note: 路由配置项

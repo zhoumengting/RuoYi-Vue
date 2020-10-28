@@ -1,20 +1,32 @@
 <template>
   <div class="login">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
+    <!--v-bind 动态绑定指令，默认情况下标签自带属性的值是固定的-->
+    <!--:model 是 v-bind:model 的缩写-->
+    <!--:rules 表单验证规则-->
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form">
       <h3 class="title">若依后台管理系统</h3>
       <el-form-item prop="username">
-        <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
+        <!-- v-model 指令实现双向数据绑定，只对表单控件标签的数据双向绑定有效-->
+        <el-input
+          v-model="loginForm.username"
+          type="text"
+          auto-complete="off"
+          placeholder="账号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
+        <!--@keyup.enter.native="handleLogin" 监听键盘事件-->
         <el-input
           v-model="loginForm.password"
           type="password"
           auto-complete="off"
           placeholder="密码"
-          @keyup.enter.native="handleLogin"
-        >
+          @keyup.enter.native="handleLogin">
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -24,11 +36,11 @@
           auto-complete="off"
           placeholder="验证码"
           style="width: 63%"
-          @keyup.enter.native="handleLogin"
-        >
+          @keyup.enter.native="handleLogin">
           <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
         </el-input>
         <div class="login-code">
+          <!--@click 是 v-on:click 缩写-->
           <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
@@ -39,8 +51,7 @@
           size="medium"
           type="primary"
           style="width:100%;"
-          @click.native.prevent="handleLogin"
-        >
+          @click.native.prevent="handleLogin">
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
@@ -58,6 +69,7 @@ import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 
+//可用于导出模块
 export default {
   name: "Login",
   data() {
@@ -84,7 +96,9 @@ export default {
       redirect: undefined
     };
   },
+  //监听属性
   watch: {
+    //监听路由的变化
     $route: {
       handler: function(route) {
         this.redirect = route.query && route.query.redirect;
@@ -92,6 +106,7 @@ export default {
       immediate: true
     }
   },
+  //生命周期钩子函数created：在一个实例被创建之后执行代码
   created() {
     this.getCode();
     this.getCookie();
