@@ -29,7 +29,7 @@ public class GenConstants
     public static final String PARENT_MENU_NAME = "parentMenuName";
 
     /** 数据库字符串类型 */
-    public static final String[] COLUMNTYPE_STR = { "char", "varchar", "narchar", "varchar2", "tinytext", "text",
+    public static final String[] COLUMNTYPE_STR = { "char", "varchar", "nvarchar", "varchar2", "tinytext", "text",
             "mediumtext", "longtext" };
 
     /** 数据库时间类型 */
@@ -37,7 +37,7 @@ public class GenConstants
 
     /** 数据库数字类型 */
     public static final String[] COLUMNTYPE_NUMBER = { "tinyint", "smallint", "mediumint", "int", "number", "integer",
-            "bigint", "float", "float", "double", "decimal" };
+            "bit", "bigint", "float", "float", "double", "decimal" };
 
     /** 页面不需要编辑字段 */
     public static final String[] COLUMNNAME_NOT_EDIT = { "id", "create_by", "create_time", "del_flag" };
@@ -73,6 +73,9 @@ public class GenConstants
 
     /** 日期控件 */
     public static final String HTML_DATETIME = "datetime";
+
+    /** 富文本控件 */
+    public static final String HTML_EDITOR = "editor";
 
     /** 字符串类型 */
     public static final String TYPE_STRING = "String";

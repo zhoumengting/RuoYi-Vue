@@ -13,12 +13,14 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.TreeSelect;
 import com.ruoyi.common.core.domain.entity.SysMenu;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.vo.MetaVo;
 import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.mapper.SysMenuMapper;
+import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysRoleMenuMapper;
 import com.ruoyi.system.service.ISysMenuService;
 
@@ -34,6 +36,9 @@ public class SysMenuServiceImpl implements ISysMenuService
 
     @Autowired
     private SysMenuMapper menuMapper;
+
+    @Autowired
+    private SysRoleMapper roleMapper;
 
     @Autowired
     private SysRoleMenuMapper roleMenuMapper;
@@ -124,7 +129,8 @@ public class SysMenuServiceImpl implements ISysMenuService
     @Override
     public List<Integer> selectMenuListByRoleId(Long roleId)
     {
-        return menuMapper.selectMenuListByRoleId(roleId);
+        SysRole role = roleMapper.selectRoleById(roleId);
+        return menuMapper.selectMenuListByRoleId(roleId, role.isMenuCheckStrictly());
     }
 
     /**
@@ -144,7 +150,7 @@ public class SysMenuServiceImpl implements ISysMenuService
             router.setName(getRouteName(menu));
             router.setPath(getRouterPath(menu));
             router.setComponent(getComponent(menu));
-            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon()));
+            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache())));
             List<SysMenu> cMenus = menu.getChildren();
             if (!cMenus.isEmpty() && cMenus.size() > 0 && UserConstants.TYPE_DIR.equals(menu.getMenuType()))
             {
@@ -159,7 +165,7 @@ public class SysMenuServiceImpl implements ISysMenuService
                 children.setPath(menu.getPath());
                 children.setComponent(menu.getComponent());
                 children.setName(StringUtils.capitalize(menu.getPath()));
-                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon()));
+                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache())));
                 childrenList.add(children);
                 router.setChildren(childrenList);
             }
@@ -178,14 +184,19 @@ public class SysMenuServiceImpl implements ISysMenuService
     public List<SysMenu> buildMenuTree(List<SysMenu> menus)
     {
         List<SysMenu> returnList = new ArrayList<SysMenu>();
+        List<Long> tempList = new ArrayList<Long>();
+        for (SysMenu dept : menus)
+        {
+            tempList.add(dept.getMenuId());
+        }
         for (Iterator<SysMenu> iterator = menus.iterator(); iterator.hasNext();)
         {
-            SysMenu t = (SysMenu) iterator.next();
-            // 根据传入的某个父节点ID,遍历该父节点的所有子节点
-            if (t.getParentId() == 0)
+            SysMenu menu = (SysMenu) iterator.next();
+            // 如果是顶级节点, 遍历该父节点的所有子节点
+            if (!tempList.contains(menu.getParentId()))
             {
-                recursionFn(menus, t);
-                returnList.add(t);
+                recursionFn(menus, menu);
+                returnList.add(menu);
             }
         }
         if (returnList.isEmpty())
@@ -406,13 +417,7 @@ public class SysMenuServiceImpl implements ISysMenuService
         {
             if (hasChild(list, tChild))
             {
-                // 判断是否有子节点
-                Iterator<SysMenu> it = childList.iterator();
-                while (it.hasNext())
-                {
-                    SysMenu n = (SysMenu) it.next();
-                    recursionFn(list, n);
-                }
+                recursionFn(list, tChild);
             }
         }
     }

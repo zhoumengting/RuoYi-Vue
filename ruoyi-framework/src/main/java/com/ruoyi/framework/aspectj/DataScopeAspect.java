@@ -79,11 +79,11 @@ public class DataScopeAspect
         }
         // 获取当前的用户
         LoginUser loginUser = SpringUtils.getBean(TokenService.class).getLoginUser(ServletUtils.getRequest());
-        SysUser currentUser = loginUser.getUser();
-        if (currentUser != null)
+        if (StringUtils.isNotNull(loginUser))
         {
+            SysUser currentUser = loginUser.getUser();
             // 如果是超级管理员，则不过滤数据
-            if (!currentUser.isAdmin())
+            if (StringUtils.isNotNull(currentUser) && !currentUser.isAdmin())
             {
                 dataScopeFilter(joinPoint, currentUser, controllerDataScope.deptAlias(),
                         controllerDataScope.userAlias());
@@ -142,8 +142,12 @@ public class DataScopeAspect
 
         if (StringUtils.isNotBlank(sqlString.toString()))
         {
-            BaseEntity baseEntity = (BaseEntity) joinPoint.getArgs()[0];
-            baseEntity.getParams().put(DATA_SCOPE, " AND (" + sqlString.substring(4) + ")");
+            Object params = joinPoint.getArgs()[0];
+            if (StringUtils.isNotNull(params) && params instanceof BaseEntity)
+            {
+                BaseEntity baseEntity = (BaseEntity) params;
+                baseEntity.getParams().put(DATA_SCOPE, " AND (" + sqlString.substring(4) + ")");
+            }
         }
     }
 

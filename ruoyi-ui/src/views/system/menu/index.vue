@@ -187,6 +187,14 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.menuType == 'C'" label="是否缓存">
+              <el-radio-group v-model="form.isCache">
+                <el-radio label="0">缓存</el-radio>
+                <el-radio label="1">不缓存</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -316,6 +324,7 @@ export default {
         menuType: "M",
         orderNum: undefined,
         isFrame: "1",
+        isCache: "0",
         visible: "0",
         status: "0"
       };
@@ -358,19 +367,15 @@ export default {
         if (valid) {
           if (this.form.menuId != undefined) {
             updateMenu(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              }
+              this.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
             });
           } else {
             addMenu(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              }
+              this.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
             });
           }
         }
@@ -387,7 +392,7 @@ export default {
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        }).catch(function() {});
+        })
     }
   }
 };

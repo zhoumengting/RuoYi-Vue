@@ -175,11 +175,16 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单权限">
+          <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
+          <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
+          <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
           <el-tree
+            class="tree-border"
             :data="menuOptions"
             show-checkbox
             ref="menu"
             node-key="id"
+            :check-strictly="!form.menuCheckStrictly"
             empty-text="加载中，请稍后"
             :props="defaultProps"
           ></el-tree>
@@ -214,12 +219,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="数据权限" v-show="form.dataScope == 2">
+          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
+          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
+          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
           <el-tree
+            class="tree-border"
             :data="deptOptions"
             show-checkbox
             default-expand-all
             ref="dept"
             node-key="id"
+            :check-strictly="!form.deptCheckStrictly"
             empty-text="加载中，请稍后"
             :props="defaultProps"
           ></el-tree>
@@ -262,6 +272,10 @@ export default {
       open: false,
       // 是否显示弹出层（数据权限）
       openDataScope: false,
+      menuExpand: false,
+      menuNodeAll: false,
+      deptExpand: true,
+      deptNodeAll: false,
       // 日期范围
       dateRange: [],
       // 状态数据字典
@@ -354,18 +368,18 @@ export default {
     // 所有菜单节点数据
     getMenuAllCheckedKeys() {
       // 目前被选中的菜单节点
-      let checkedKeys = this.$refs.menu.getHalfCheckedKeys();
+      let checkedKeys = this.$refs.menu.getCheckedKeys();
       // 半选中的菜单节点
-      let halfCheckedKeys = this.$refs.menu.getCheckedKeys();
+      let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
     // 所有部门节点数据
     getDeptAllCheckedKeys() {
       // 目前被选中的部门节点
-      let checkedKeys = this.$refs.dept.getHalfCheckedKeys();
+      let checkedKeys = this.$refs.dept.getCheckedKeys();
       // 半选中的部门节点
-      let halfCheckedKeys = this.$refs.dept.getCheckedKeys();
+      let halfCheckedKeys = this.$refs.dept.getHalfCheckedKeys();
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
@@ -413,6 +427,10 @@ export default {
       if (this.$refs.menu != undefined) {
         this.$refs.menu.setCheckedKeys([]);
       }
+      this.menuExpand = false,
+      this.menuNodeAll = false,
+      this.deptExpand = true,
+      this.deptNodeAll = false,
       this.form = {
         roleId: undefined,
         roleName: undefined,
@@ -421,6 +439,8 @@ export default {
         status: "0",
         menuIds: [],
         deptIds: [],
+        menuCheckStrictly: true,
+        deptCheckStrictly: true,
         remark: undefined
       };
       this.resetForm("form");
@@ -441,6 +461,36 @@ export default {
       this.ids = selection.map(item => item.roleId)
       this.single = selection.length!=1
       this.multiple = !selection.length
+    },
+    // 树权限（展开/折叠）
+    handleCheckedTreeExpand(value, type) {
+      if (type == 'menu') {
+        let treeList = this.menuOptions;
+        for (let i = 0; i < treeList.length; i++) {
+          this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value;
+        }
+      } else if (type == 'dept') {
+        let treeList = this.deptOptions;
+        for (let i = 0; i < treeList.length; i++) {
+          this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value;
+        }
+      }
+    },
+    // 树权限（全选/全不选）
+    handleCheckedTreeNodeAll(value, type) {
+      if (type == 'menu') {
+        this.$refs.menu.setCheckedNodes(value ? this.menuOptions: []);
+      } else if (type == 'dept') {
+        this.$refs.dept.setCheckedNodes(value ? this.deptOptions: []);
+      }
+    },
+    // 树权限（父子联动）
+    handleCheckedTreeConnect(value, type) {
+      if (type == 'menu') {
+        this.form.menuCheckStrictly = value ? true: false;
+      } else if (type == 'dept') {
+        this.form.deptCheckStrictly = value ? true: false;
+      }
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -487,20 +537,16 @@ export default {
           if (this.form.roleId != undefined) {
             this.form.menuIds = this.getMenuAllCheckedKeys();
             updateRole(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              }
+              this.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
             });
           } else {
             this.form.menuIds = this.getMenuAllCheckedKeys();
             addRole(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              }
+              this.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
             });
           }
         }
@@ -511,11 +557,9 @@ export default {
       if (this.form.roleId != undefined) {
         this.form.deptIds = this.getDeptAllCheckedKeys();
         dataScope(this.form).then(response => {
-          if (response.code === 200) {
-            this.msgSuccess("修改成功");
-            this.openDataScope = false;
-            this.getList();
-          }
+          this.msgSuccess("修改成功");
+          this.openDataScope = false;
+          this.getList();
         });
       }
     },
@@ -531,7 +575,7 @@ export default {
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        }).catch(function() {});
+        })
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -544,7 +588,7 @@ export default {
           return exportRole(queryParams);
         }).then(response => {
           this.download(response.msg);
-        }).catch(function() {});
+        })
     }
   }
 };
