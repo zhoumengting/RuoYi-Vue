@@ -20,8 +20,8 @@ import com.ruoyi.common.utils.sql.SqlUtil;
 
 /**
  * web层通用数据处理
- * 
- * @author ruoyi
+ *
+ *
  */
 public class BaseController
 {
@@ -49,6 +49,7 @@ public class BaseController
      */
     protected void startPage()
     {
+        //获取分页对象
         PageDomain pageDomain = TableSupport.buildPageRequest();
         Integer pageNum = pageDomain.getPageNum();
         Integer pageSize = pageDomain.getPageSize();
@@ -75,7 +76,7 @@ public class BaseController
 
     /**
      * 响应返回结果
-     * 
+     *
      * @param rows 影响行数
      * @return 操作结果
      */

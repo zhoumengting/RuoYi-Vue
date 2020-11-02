@@ -7,7 +7,7 @@ import com.ruoyi.common.core.domain.entity.SysMenu;
 /**
  * 菜单表 数据层
  *
- * @author ruoyi
+ *
  */
 public interface SysMenuMapper
 {
@@ -59,7 +59,7 @@ public interface SysMenuMapper
 
     /**
      * 根据角色ID查询菜单树信息
-     * 
+     *
      * @param roleId 角色ID
      * @param menuCheckStrictly 菜单树选择项是否关联显示
      * @return 选中菜单列表

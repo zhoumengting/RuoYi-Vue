@@ -4,8 +4,8 @@ import com.ruoyi.common.exception.BaseException;
 
 /**
  * 用户信息异常类
- * 
- * @author ruoyi
+ *
+ *
  */
 public class UserException extends BaseException
 {

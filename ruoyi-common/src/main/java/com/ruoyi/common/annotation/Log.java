@@ -10,8 +10,8 @@ import com.ruoyi.common.enums.OperatorType;
 
 /**
  * 自定义操作日志记录注解
- * 
- * @author ruoyi
+ *
+ *
  *
  */
 @Target({ ElementType.PARAMETER, ElementType.METHOD })
@@ -20,7 +20,7 @@ import com.ruoyi.common.enums.OperatorType;
 public @interface Log
 {
     /**
-     * 模块 
+     * 模块
      */
     public String title() default "";
 

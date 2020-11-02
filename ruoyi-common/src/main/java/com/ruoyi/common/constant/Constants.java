@@ -2,8 +2,8 @@ package com.ruoyi.common.constant;
 
 /**
  * 通用常量信息
- * 
- * @author ruoyi
+ *
+ *
  */
 public class Constants
 {
@@ -61,7 +61,7 @@ public class Constants
      * 登录用户 redis key
      */
     public static final String LOGIN_TOKEN_KEY = "login_tokens:";
-    
+
     /**
      * 防重提交 redis key
      */

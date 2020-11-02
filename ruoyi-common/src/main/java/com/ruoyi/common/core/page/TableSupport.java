@@ -4,8 +4,8 @@ import com.ruoyi.common.utils.ServletUtils;
 
 /**
  * 表格数据处理
- * 
- * @author ruoyi
+ *
+ *
  */
 public class TableSupport
 {
@@ -35,6 +35,7 @@ public class TableSupport
     public static PageDomain getPageDomain()
     {
         PageDomain pageDomain = new PageDomain();
+        //从前端数据中获取分页参数
         pageDomain.setPageNum(ServletUtils.getParameterToInt(PAGE_NUM));
         pageDomain.setPageSize(ServletUtils.getParameterToInt(PAGE_SIZE));
         pageDomain.setOrderByColumn(ServletUtils.getParameter(ORDER_BY_COLUMN));

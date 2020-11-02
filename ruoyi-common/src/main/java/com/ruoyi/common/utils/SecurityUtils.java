@@ -9,8 +9,8 @@ import com.ruoyi.common.exception.CustomException;
 
 /**
  * 安全服务工具类
- * 
- * @author ruoyi
+ *
+ *
  */
 public class SecurityUtils
 {
@@ -79,7 +79,7 @@ public class SecurityUtils
 
     /**
      * 是否为管理员
-     * 
+     *
      * @param userId 用户ID
      * @return 结果
      */

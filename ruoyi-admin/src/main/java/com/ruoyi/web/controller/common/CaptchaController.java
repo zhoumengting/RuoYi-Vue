@@ -20,8 +20,8 @@ import com.ruoyi.common.utils.uuid.IdUtils;
 
 /**
  * 验证码操作处理
- * 
- * @author ruoyi
+ *
+ *
  */
 @RestController
 public class CaptchaController
@@ -34,7 +34,7 @@ public class CaptchaController
 
     @Autowired
     private RedisCache redisCache;
-    
+
     // 验证码类型
     @Value("${ruoyi.captchaType}")
     private String captchaType;

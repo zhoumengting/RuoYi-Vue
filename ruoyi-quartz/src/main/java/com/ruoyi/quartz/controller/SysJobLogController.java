@@ -19,8 +19,8 @@ import com.ruoyi.quartz.service.ISysJobLogService;
 
 /**
  * 调度日志操作处理
- * 
- * @author ruoyi
+ *
+ *
  */
 @RestController
 @RequestMapping("/monitor/jobLog")
@@ -53,7 +53,7 @@ public class SysJobLogController extends BaseController
         ExcelUtil<SysJobLog> util = new ExcelUtil<SysJobLog>(SysJobLog.class);
         return util.exportExcel(list, "调度日志");
     }
-    
+
     /**
      * 根据调度编号获取详细信息
      */

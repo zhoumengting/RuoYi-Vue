@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 文件处理工具类
- * 
- * @author ruoyi
+ *
+ *
  */
 public class FileUtils extends org.apache.commons.io.FileUtils
 {
@@ -20,7 +20,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils
 
     /**
      * 输出指定文件的byte数组
-     * 
+     *
      * @param filePath 文件路径
      * @param os 输出流
      * @return
@@ -76,7 +76,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils
 
     /**
      * 删除文件
-     * 
+     *
      * @param filePath 文件
      * @return
      */
@@ -95,7 +95,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils
 
     /**
      * 文件名称验证
-     * 
+     *
      * @param filename 文件名称
      * @return true 正常 false 非法
      */
@@ -106,7 +106,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils
 
     /**
      * 下载文件名重新编码
-     * 
+     *
      * @param request 请求对象
      * @param fileName 文件名
      * @return 编码后的文件名
